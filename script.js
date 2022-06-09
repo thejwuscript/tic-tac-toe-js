@@ -16,8 +16,7 @@ const gameLogic = (() => {
   // return an object
 })();
 
-const displayController (() => {
+const displayController = (() => {
   // some vars and functions
   //return an object
 })();
-
