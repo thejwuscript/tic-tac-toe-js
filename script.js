@@ -1,48 +1,85 @@
+// gameBoard module
 const gameBoard = (() => {
-  const cells = ["O", "X", "O", "O", "X", "X", "X", "O", "O"]
-  return { cells }
+  const cells = ["", "X", "", "", "O", "", "", "", ""]
+
+  const changeCell = (index, shape) => {
+    cells[index] = shape
+  }
+
+  return { cells, changeCell }
 })();
 
+
+// Player factory function
 const Player = (name, shape) => {
   const getName = () => name;
   const getShape = () => shape;
-  return {getName, getShape};
+
+  const addMark = (element) => {
+    if (element.textContent === "") {
+      let index = element.id.slice(-1)
+      gameBoard.changeCell(index, shape)
+    } else {
+      console.log("not changed!")
+    }
+  };
+
+  return { getName, getShape, addMark };
 }
 
-const gameLogic = (() => {
-  // some variables and functions
+// gameLogic module
+const game = (() => {
+  let circlePlayer = Player('Circle', 'O')
+  let crossPlayer = Player('Cross', 'X')
+  let currentPlayer = crossPlayer
+
+  const play = () => {
+    setup()
+    round()
+  }
+  
+  const setup = () => {}
+  
+  const round = () => {
+    // loop
+    // rotate event listeners for spots that are empty
+    changeEventListeners(currentPlayer)
+    // get rid of listeners after player plays a move
+
+  }
+
+  const changeEventListeners = (player) => {
+    // get all nine DOM elements in an array.
+    let nodes = document.querySelectorAll("[id^='cell']")
+    // Filter out the ones that have a mark already.
+    let emptyNodes = [...nodes].filter(node => node.textContent === "")
+    // for each DOM element in the above array, add new listener with the once option.
+    emptyNodes.forEach(node => node.addEventListener('click', (e) => {
+      player.addMark(e.target);
+      displayController.showCells();
+    }, { once: true }))
+  }
+
   // assess victory condition after player makes a move
-  // return an object
+  return { play }
 })();
 
+// displayController module
 const displayController = (() => {
-  // get a reference to each cell and store them in an array
-  //const cell0 = document.getElementById('cell0')
-  //const cell1 = document.getElementById('cell1')
-  //const cell2 = document.getElementById('cell2')
-  //const cell3 = document.getElementById('cell3')
-  //const cell4 = document.getElementById('cell4')
-  //const cell5 = document.getElementById('cell5')
-  //const cell6 = document.getElementById('cell6')
-  //const cell7 = document.getElementById('cell7')
-  //const cell8 = document.getElementById('cell8')
-  //const cell9 = document.getElementById('cell9')
-  
-  const showCells = () => {
-    let cellsArray = gameBoard.cells
-    for ( let i = 0; i < 9; i++) {
-      document.getElementById(`cell${i}`).textContent = cellsArray[i]
-      console.log(cellsArray[i]);
+
+  function showCells() {
+    let cellsArray = gameBoard.cells;
+    for (let i = 0; i < 9; i++) {
+      document.getElementById(`cell${i}`).textContent = cellsArray[i];
     };
-  };
+  }
   // show board everytime player makes a move
   // show game result
   // show where player makes the move
-  // return an object
   return {
     showCells
   }
 })();
 
-
-displayController.showCells();
+displayController.showCells()
+game.play()
