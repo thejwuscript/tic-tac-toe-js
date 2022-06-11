@@ -38,26 +38,18 @@ const game = (() => {
     round()
   }
   
-  const setup = () => {}
+  const setup = () => {
+    displayController.showCells()
+  }
   
   const round = () => {
-    // loop
-    // rotate event listeners for spots that are empty
-    changeEventListeners(currentPlayer)
-    // get rid of listeners after player plays a move
-
-  }
-
-  const changeEventListeners = (player) => {
-    // get all nine DOM elements in an array.
     let nodes = document.querySelectorAll("[id^='cell']")
-    // Filter out the ones that have a mark already.
     let emptyNodes = [...nodes].filter(node => node.textContent === "")
-    // for each DOM element in the above array, add new listener with the once option.
     emptyNodes.forEach(node => node.addEventListener('click', (e) => {
-      player.addMark(e.target);
-      displayController.showCells();
-    }, { once: true }))
+      currentPlayer.addMark(e.target)
+      displayController.showCells()
+      currentPlayer = (currentPlayer === crossPlayer) ? circlePlayer : crossPlayer
+    }))
   }
 
   // assess victory condition after player makes a move
@@ -81,5 +73,5 @@ const displayController = (() => {
   }
 })();
 
-displayController.showCells()
+
 game.play()
