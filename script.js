@@ -1,12 +1,21 @@
 // gameBoard module
 const gameBoard = (() => {
-  const cells = ["", "X", "", "", "O", "", "", "", ""]
+  const cells = ["", "", "", "", "", "", "", "", ""]
 
   const changeCell = (index, shape) => {
     cells[index] = shape
   }
 
-  return { cells, changeCell }
+  const getIndexes = (player) => {
+    return cells.reduce((acc, curr, index) => {
+      if (curr === player.getShape()) {
+        acc.push(index)
+      }
+      return acc
+    }, [])
+  }
+
+  return { cells, changeCell, getIndexes }
 })();
 
 
@@ -33,6 +42,17 @@ const game = (() => {
   let crossPlayer = Player('Cross', 'X')
   let currentPlayer = crossPlayer
 
+  const VICTORY_COMBOS = [
+    [0,1,2],
+    [3,4,5],
+    [6,7,8],
+    [0,3,6],
+    [1,4,7],
+    [2,5,8],
+    [0,4,8],
+    [2,4,6]
+  ]
+
   const play = () => {
     setup()
     round()
@@ -48,11 +68,21 @@ const game = (() => {
     emptyNodes.forEach(node => node.addEventListener('click', (e) => {
       currentPlayer.addMark(e.target)
       displayController.showCells()
+      // assess victory condition
+      console.log(assessVictory())
       currentPlayer = (currentPlayer === crossPlayer) ? circlePlayer : crossPlayer
     }))
   }
 
-  // assess victory condition after player makes a move
+  const assessVictory = () => {
+    let markedIndexes = gameBoard.getIndexes(currentPlayer)
+    return VICTORY_COMBOS.some(array => {
+      return array.every(num => {
+        return markedIndexes.includes(num)
+      })
+    })
+  }
+
   return { play }
 })();
 
