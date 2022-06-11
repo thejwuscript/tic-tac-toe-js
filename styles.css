@@ -26,3 +26,23 @@ body {
   align-items: center;
   justify-content: center;
 }
+
+.message-container {
+  height: 30px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 50%;
+  position: relative;
+}
+
+.message {
+  width: 300px;
+  text-align: center;
+}
+
+.message-container > .restart {
+  position: absolute;
+  right: 0;
+  visibility: hidden;
+}
